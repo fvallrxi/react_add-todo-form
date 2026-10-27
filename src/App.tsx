@@ -8,9 +8,9 @@ import { Todo } from './types/Todo';
 import { User } from './types/User';
 import { useState } from 'react';
 
-const getUserById = (userId: number): User => {
-  return usersFromServer.find(user => user.id === userId) as User;
-};
+function getUserById(userId: number): User | null {
+  return usersFromServer.find(user => user.id === userId) || null;
+}
 
 const initialTodos: Todo[] = todosFromServer.map(todo => ({
   ...todo,
@@ -28,7 +28,7 @@ export const App = () => {
   const [hasTitleError, setHasTitleError] = useState(false);
 
   const [userId, setUserId] = useState(0);
-  const [hasUserIdErorr, setHasUserIdErorr] = useState(false);
+  const [hasUserIdError, setHasUserIdError] = useState(false);
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const allowedTitle = event.target.value.replace(
@@ -42,7 +42,7 @@ export const App = () => {
 
   const handleUserIdChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setUserId(+event.target.value);
-    setHasUserIdErorr(false);
+    setHasUserIdError(false);
   };
 
   const resetForm = () => {
@@ -56,7 +56,7 @@ export const App = () => {
     const trimmedTitle = title.trim();
 
     setHasTitleError(!trimmedTitle);
-    setHasUserIdErorr(!userId);
+    setHasUserIdError(!userId);
 
     if (!trimmedTitle || !userId) {
       return;
@@ -108,11 +108,11 @@ export const App = () => {
                 {user.name}
               </option>
             ))}
-
-            {hasUserIdErorr && (
-              <span className="error">Please choose a user</span>
-            )}
           </select>
+
+          {hasUserIdError && (
+            <span className="error">Please choose a user</span>
+          )}
         </div>
 
         <button type="submit" data-cy="submitButton">
